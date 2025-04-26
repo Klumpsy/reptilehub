@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "preserveConstEnums": true,
+      "allowSyntheticDefaultImports": true,
+      "allowImportingTsExtensions": true,
+      "esModuleInterop": true,
+      "jsx": "react" 
+    },
+    "include": ["src/**/*"],
+    "exclude": ["**/*.spec.ts"]
+  }
