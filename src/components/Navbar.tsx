@@ -15,11 +15,13 @@ const Navbar: React.FunctionComponent = () => {
           </a>
           <div>
             <ul className="flex">
-              {pagesData.map((page) => (
-                <li className="ml-3 hover:text-main-green">
-                  <NavLink to={page.path}>{page.title}</NavLink>
-                </li>
-              ))}
+              {pagesData
+                .filter((page) => page.inNavBar)
+                .map((page) => (
+                  <li className="ml-3 hover:text-main-green">
+                    <NavLink to={page.path}>{page.title}</NavLink>
+                  </li>
+                ))}
             </ul>
           </div>
           <ProfileDropdown />
