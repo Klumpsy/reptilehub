@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/images/logo.png";
 import pagesData from "../pages/pagesData";
 import { NavLink } from "react-router";
 import ProfileDropdown from "./ProfileDropdown";
+import useAuthContext from "../context/AuthContext/AuthContext";
 
 const Navbar: React.FunctionComponent = () => {
+  const { user, getUser } = useAuthContext();
+
+  useEffect(() => {
+    if (!user) {
+      getUser();
+    }
+  }, []);
+
   return (
     <nav className="bg-gray-800 text-white sticky w-full p-2 mb-2">
       <div className="max-w-7xl mx-auto">
@@ -17,13 +26,14 @@ const Navbar: React.FunctionComponent = () => {
             <ul className="flex">
               {pagesData
                 .filter((page) => page.inNavBar)
-                .map((page) => (
-                  <li className="ml-3 hover:text-main-green">
+                .map((page, index) => (
+                  <li key={index} className="ml-3 hover:text-main-green">
                     <NavLink to={page.path}>{page.title}</NavLink>
                   </li>
                 ))}
             </ul>
           </div>
+          <div className="text-medium text-main-green">{user?.name}</div>
           <ProfileDropdown />
         </div>
       </div>

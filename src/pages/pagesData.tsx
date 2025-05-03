@@ -5,6 +5,7 @@ import Home from "./Home";
 import Reptiles from "./Reptiles";
 import Teraria from "./Teraria";
 import Login from "./Login";
+import Register from "./Register";
 
 const pagesData: routerType[] = [
   {
@@ -35,6 +36,12 @@ const pagesData: routerType[] = [
     path: "/login",
     element: <Login />,
     title: "login",
+    inNavBar: false,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+    title: "register",
     inNavBar: false,
   },
 ];
