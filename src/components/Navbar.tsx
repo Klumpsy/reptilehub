@@ -33,8 +33,10 @@ const Navbar: React.FunctionComponent = () => {
                 ))}
             </ul>
           </div>
-          <div className="text-medium text-main-green">{user?.name}</div>
-          <ProfileDropdown />
+          <div className="flex items-center">
+            <div className="text-medium text-main-green mr-3">{user?.name}</div>
+            <ProfileDropdown />
+          </div>
         </div>
       </div>
     </nav>

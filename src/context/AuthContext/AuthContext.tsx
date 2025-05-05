@@ -13,6 +13,18 @@ import { AuthContextType, ErrorMap, RegisterData } from "./types";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
+interface RegisterMutationProps {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}
+
+interface LoginMutationProps {
+  email: string;
+  password: string;
+}
+
 export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
   children,
 }) => {
@@ -22,21 +34,21 @@ export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
 
   const getUser = async () => {
     try {
-      csrf();
-      const { data } = await axiosClient.get("/api/user");
-      setUser(data);
+      await csrf();
+      const response = await axiosClient.get("/api/user");
+      setUser(response.data);
     } catch (error) {
       console.error("Failed to fetch user:", error);
     }
   };
 
   const loginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
+    mutationFn: async (data: LoginMutationProps) => {
       await csrf();
-      return axiosClient.post("/login", data);
+      const loginData = await axiosClient.post("/login", data);
+      return loginData;
     },
     onSuccess: async () => {
-      await csrf();
       await getUser();
       setErrors({});
       navigate("/");
@@ -50,9 +62,29 @@ export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
     },
   });
 
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await csrf();
+      await axiosClient.post("/logout");
+    },
+    onSuccess: async () => {
+      setUser(null);
+      setErrors({});
+      navigate("/");
+    },
+    onError: (error: AxiosError<{ errors: ErrorMap }>) => {
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        setErrors({ general: "An unexpected error occurred" });
+      }
+    },
+  });
+
   const registerMutation = useMutation({
-    mutationFn: (data: { name; email; password; password_confirmation }) => {
-      return csrf().then(() => axiosClient.post("/register", data));
+    mutationFn: async (data: RegisterMutationProps) => {
+      await csrf();
+      return await axiosClient.post("/register", data);
     },
     onSuccess: () => {
       setErrors({});
@@ -82,6 +114,8 @@ export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
     });
   };
 
+  const logout = () => logoutMutation.mutate();
+
   const register = (data: RegisterData) => {
     const {
       setEmail,
@@ -108,6 +142,7 @@ export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({
         user,
         errors,
         login,
+        logout,
         register,
         getUser,
         loginMutation,

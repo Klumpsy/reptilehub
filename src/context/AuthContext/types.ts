@@ -11,7 +11,8 @@ export interface ErrorMap {
 export interface AuthContextType {
   user: any;
   errors: Partial<ErrorMap>;
-  login: (data: any, setEmail: Function, setPassword: Function) => void;
+  login: (data: {email: string, password: string}, setEmail: Function, setPassword: Function) => void;
+  logout: () => void;
   register: (data: any) => void;
   getUser: () => Promise<void>;
   loginMutation: UseMutationResult;
